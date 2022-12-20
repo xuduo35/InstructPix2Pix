@@ -2,10 +2,10 @@
 UnOfficial Pytorch implementation of 'InstructPix2Pix Learning to Follow Image Editing Instructions', based on https://github.com/JoePenna/Dreambooth-Stable-Diffusion
 
 # Inference
-python3 stable_txt2img.py --ddim_eta 0.0 --n_samples 4 --n_iter 1 --ddim_steps 50 --ckpt logs/instruct/checkpoints/last.ckpt --W 256 --H 256 --init_img ./samples/tower.jpg --prompt "add fireworks-in sky"
+python3 stable_txt2img.py --ddim_eta 0.0 --n_samples 4 --n_iter 1 --ddim_steps 50 --ckpt logs/instruct/checkpoints/last.ckpt --W 256 --H 256 --init_img ./samples/tower.jpg --prompt "add fireworks in sky"
 ![result](https://github.com/xuduo35/InstructPix2Pix/raw/main/samples/add-fireworks-in-sky-0000.jpg )
 
-python3 stable_txt2img.py --ddim_eta 0.0 --n_samples 4 --n_iter 1 --ddim_steps 50 --ckpt logs/instruct/checkpoints/last.ckpt --W 256 --H 256 --init_img ./samples/tower.jpg --prompt "add fireworks-in sky" --negprompt "blurred"
+python3 stable_txt2img.py --ddim_eta 0.0 --n_samples 4 --n_iter 1 --ddim_steps 50 --ckpt logs/instruct/checkpoints/last.ckpt --W 256 --H 256 --init_img ./samples/tower.jpg --prompt "add fireworks in sky" --negprompt "blurred"
 ![result](https://github.com/xuduo35/InstructPix2Pix/raw/main/samples/add-fireworks-in-sky-0005-blurred.jpg )
 
 python3 stable_txt2img.py --ddim_eta 0.0 --n_samples 4 --n_iter 1 --ddim_steps 50 --ckpt logs/instruct/checkpoints/last.ckpt --W 512 --H 512 --init_img ./samples/Vermeer_Girl.jpg --prompt "Apply face paint"
