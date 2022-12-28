@@ -35,5 +35,12 @@ python3 stable_txt2img.py --ddim_eta 0.0 --n_samples 4 --n_iter 1 --ddim_steps 5
 python3 stable_txt2img.py --ddim_eta 0.0 --n_samples 4 --n_iter 1 --ddim_steps 50 --ckpt logs/instruct/checkpoints/last.ckpt --W 512 --H 512 --init_img ./samples/girl.jpg --prompt "make hair curly"
 ![result](https://github.com/xuduo35/InstructPix2Pix/raw/main/samples/make-hair-curly-0000-512x512.jpg )
 
-# Implementation deatils
+# Checkpoint
+Link: https://drive.google.com/file/d/1vn9qG4kLvXPNJAT-PW7Exwas7MyT7JBu/view?usp=sharing
 
+# Implementation deatils
+1. Add additional input channels to the first convolutional layer. All available weights of the diffusion model are initialized from the pretrained checkpoints, and weights that operate on the newly added input channels are initialized to zero. Besides, I add one more GroupNorm32/SiLU/conv_nd layer than original paper.
+2. Set learing rate set 1e-4
+
+# Data Preperation
+This is tough and money-consuming part...
