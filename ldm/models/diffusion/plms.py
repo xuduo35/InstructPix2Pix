@@ -9,7 +9,7 @@ from ldm.modules.diffusionmodules.util import make_ddim_sampling_parameters, mak
 
 
 class PLMSSampler(object):
-    def __init__(self, model, schedule="linear", **kwargs):
+    def __init__(self, model, blendmodel=None, blendpos=-1, schedule="linear", **kwargs):
         super().__init__()
         self.model = model
         self.ddpm_num_timesteps = model.num_timesteps
@@ -60,6 +60,7 @@ class PLMSSampler(object):
                batch_size,
                shape,
                conditioning=None,
+               conditioning0=None, t0=1.,
                callback=None,
                normals_sequence=None,
                img_callback=None,

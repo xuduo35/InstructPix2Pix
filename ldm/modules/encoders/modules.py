@@ -162,6 +162,7 @@ class FrozenCLIPEmbedder(AbstractEncoder):
         self.transformer = CLIPTextModel.from_pretrained(version)
         self.device = device
         self.max_length = max_length
+        self.freeze()
 
         def embedding_forward(
                 self,

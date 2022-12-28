@@ -1,4 +1,5 @@
 import os
+import random
 from typing import OrderedDict
 import numpy as np
 import PIL
@@ -25,7 +26,6 @@ class PersonalizedBase(Dataset):
                  center_crop=False,
                  mixing_prob=0.25,
                  coarse_class_text=None,
-                 token_only=False,
                  reg=False
                  ):
 
@@ -38,7 +38,6 @@ class PersonalizedBase(Dataset):
         self._length = self.num_images
 
         self.placeholder_token = placeholder_token
-        self.token_only = token_only
         self.per_image_tokens = per_image_tokens
         self.center_crop = center_crop
         self.mixing_prob = mixing_prob
@@ -59,9 +58,6 @@ class PersonalizedBase(Dataset):
                               "lanczos": PIL.Image.LANCZOS,
                               }[interpolation]
         self.flip = transforms.RandomHorizontalFlip(p=flip_p)
-        self.reg = reg
-        if self.reg and self.coarse_class_text:
-            self.reg_tokens = OrderedDict([('C', self.coarse_class_text)])
 
     def __len__(self):
         return self._length
@@ -74,11 +70,7 @@ class PersonalizedBase(Dataset):
         if not image.mode == "RGB":
             image = image.convert("RGB")
 
-        example["caption"] = ""
-        if self.reg and self.coarse_class_text:
-            example["caption"] = generic_captions_from_path(image_path, self.data_root, self.reg_tokens)
-        else:
-            example["caption"] = caption_from_path(image_path, self.data_root, self.coarse_class_text, self.placeholder_token)
+        example["caption"] = caption_from_path(image_path, self.data_root, self.coarse_class_text, self.placeholder_token)
 
         # default to score-sde preprocessing
         img = np.array(image).astype(np.uint8)
@@ -94,7 +86,6 @@ class PersonalizedBase(Dataset):
             image = image.resize((self.size, self.size),
                                  resample=self.interpolation)
 
-        image = self.flip(image)
         image = np.array(image).astype(np.uint8)
         example["image"] = (image / 127.5 - 1.0).astype(np.float32)
         return example

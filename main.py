@@ -31,6 +31,15 @@ def load_model_from_config(config, ckpt, verbose=False):
     sd = pl_sd["state_dict"]
     config.model.params.ckpt_path = ckpt
     model = instantiate_from_config(config.model)
+    keys = list(sd.keys())
+    for k in keys:
+        if k.find("input_blocks.0.0.weight")>=0 and sd[k].shape[1] == 4:
+            #print(k, sd[k].size())
+            w = torch.zeros([320, 8, 3, 3], dtype=torch.float)
+            w[:,:4,:,:] = sd[k]
+            sd[k] = w
+            sd["input_blocks.0.1.weight"] = torch.ones([320, 320, 11, 11], dtype=torch.float)
+
     m, u = model.load_state_dict(sd, strict=False)
     if len(m) > 0 and verbose:
         print("missing keys:")
@@ -143,6 +152,12 @@ def get_parser(**parser_kwargs):
     )
 
     parser.add_argument(
+        "--n_accumulate",
+        type=int,
+        default=1,
+        help="Number of accumulate iters")
+
+    parser.add_argument(
         "--datadir_in_name",
         type=str2bool,
         nargs="?",
@@ -161,13 +176,6 @@ def get_parser(**parser_kwargs):
         type=str,
         required=True,
         help="Unique token you want to represent your trained model. Ex: firstNameLastName.")
-
-    parser.add_argument("--token_only", 
-        type=str2bool,
-        const=True,
-        default=False,
-        nargs="?",
-        help="Train only using the token and no class.")
 
     parser.add_argument("--actual_resume", 
         type=str,
@@ -674,7 +682,6 @@ if __name__ == "__main__":
 
         config.data.params.train.params.data_root = opt.data_root
         config.data.params.train.params.placeholder_token = opt.token
-        config.data.params.train.params.token_only = opt.token_only or not opt.class_word
 
         config.data.params.validation.params.placeholder_token = opt.token
         config.data.params.validation.params.data_root = opt.data_root
@@ -807,6 +814,7 @@ if __name__ == "__main__":
         trainer_kwargs["callbacks"] = [instantiate_from_config(callbacks_cfg[k]) for k in callbacks_cfg]
         trainer_kwargs["max_steps"] = trainer_opt.max_steps
         trainer_kwargs["plugins"] = PruningCheckpointIO()
+        trainer_kwargs["accumulate_grad_batches"] = opt.n_accumulate
     
         trainer = Trainer.from_argparse_args(trainer_opt, **trainer_kwargs)
         trainer.logdir = logdir  ###
