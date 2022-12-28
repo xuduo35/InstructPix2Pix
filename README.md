@@ -40,7 +40,7 @@ Link: https://drive.google.com/file/d/1vn9qG4kLvXPNJAT-PW7Exwas7MyT7JBu/view?usp
 
 # Implementation deatils
 1. Add additional input channels to the first convolutional layer. All available weights of the diffusion model are initialized from the pretrained checkpoints, and weights that operate on the newly added input channels are initialized to zero. Besides, I add one more GroupNorm32/SiLU/conv_nd layer than original paper.
-2. Set learing rate set 1e-4
+2. Set learing rate set 1e-4, batch size 32
 
 # Data Preperation
 This is tough and money-consuming part...
